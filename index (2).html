@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广东松山电气工程类自主招生刷题软件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "微软雅黑", "Microsoft YaHei", "苹方", "PingFang SC", "Helvetica Neue", sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 850px;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+            padding: 30px 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: 1px;
+            background: #e8f0fe;
+            padding: 12px 20px;
+            border-radius: 50px;
+            margin-bottom: 5px;
+        }
+
+        .question-box {
+            background: #f8fafd;
+            border: 1px solid #e1e8f0;
+            border-radius: 16px;
+            padding: 20px 18px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #1e293b;
+            min-height: 100px;
+            word-break: break-word;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            white-space: pre-wrap;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #d1d9e6;
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            position: relative;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: #4f8ef7;
+            background: #f0f6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(79, 142, 247, 0.15);
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            font-weight: 600;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #f1f5f9;
+            min-width: 90px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .nav-btn:hover {
+            background: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        .nav-btn.primary {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .nav-btn.primary:hover {
+            background: #1d4ed8;
+        }
+
+        .footer-tip {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 25px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .modal p {
+            font-size: 1rem;
+            margin: 8px 0;
+            color: #334155;
+        }
+
+        .close-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .stats-highlight {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .option-btn {
+                padding: 12px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title" id="titleLabel">第 1 题 / 共 0 题</div>
+
+        <div class="question-box" id="questionText"></div>
+
+        <div class="options-grid" id="optionsContainer"></div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn">◀ 上一题</button>
+            <button class="nav-btn" id="nextBtn">下一题 ▶</button>
+            <button class="nav-btn primary" id="shuffleBtn">🔀 重新随机</button>
+            <button class="nav-btn" id="statsBtn">📊 刷题统计</button>
+        </div>
+
+        <div class="footer-tip">
+            💡 提示：点击选项即可答题，绿色为正确答案，红色为您选错的答案
+        </div>
+    </div>
+
+    <!-- 统计弹窗 -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <h3>📊 刷题统计报告</h3>
+            <div id="statsContent"></div>
+            <button class="close-btn" id="closeModalBtn">确 定</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- 题库数据（直接从Python转换）----------
+            const questions = [
+                { type: "judge", question: "“脍炙人口” 中的 “脍” 是指切细的烤肉。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "宪法规定,中华人民共和国的一切权力属于人民。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "“三人行,必有我师焉” 出自《论语》。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "欧姆定律是中学物理中电学的基本定律,适用于所有电路。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "我国的根本政治制度是人民代表大会制度。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "汉字 “川” 的笔画数是 3 画。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "职业道德的核心是爱岗敬业。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "地球绕太阳公转的周期是一年。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "民法规定,年满 18 周岁的公民是完全民事行为能力人。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "职场礼仪中,握手的时间一般控制在 3-5 秒为宜。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "“欲穷千里目,更上一层楼” 的作者是李白。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "实数包括有理数和无理数。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "习近平新时代中国特色社会主义思想是当代中国马克思主义。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "触电事故中,最危险的是电流通过心脏。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "汉语中,“的、地、得” 的用法是相同的。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "我国的国旗是五星红旗,旗面的红色象征革命。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "生物中,细胞是生物体结构和功能的基本单位。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "人际交往中,倾听是有效沟通的重要环节。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "化学中,水的化学式是 H₂O。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "我国的首都是北京,位于华北平原。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "病句 “我断定他大概会来” 的错误是前后矛盾。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "马克思主义认为,实践是认识的来源。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "职业活动中,诚实守信是基本的道德要求。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "数学中,三角形的内角和是 180 度。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "我国的国歌是《义勇军进行曲》。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "地理中,我国的地势是西高东低。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "法律中,违法不一定犯罪,犯罪一定违法。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "汉字中,形声字是最常见的造字法。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "职场中,称呼他人的时候,应该先称呼长辈、上级。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "物理中,力的作用是相互的。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "中国古代的四大发明是造纸术、印刷术、火药、指南针。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "数学中,负数没有平方根。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "思想政治中,社会主义核心价值观的基本内容是 24 个字。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "生物中,光合作用的场所是叶绿体。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "法律中,宪法是我国的根本大法,具有最高的法律效力。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "汉语中,标点符号的使用中,句号应该放在引号里面,不管是不是完整引用。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "职业道德中,奉献社会是最高层次的要求。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "地理中,我国的领土面积约 960 万平方公里。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "化学中,氧气是无色无味的气体,能支持燃烧。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "人际交往中,自我介绍的时候,应该先介绍自己,再介绍他人。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "唐诗中,“床前明月光,疑是地上霜” 的作者是杜甫。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "数学中,一次函数的图像是一条直线。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "物理中,声音的传播需要介质,真空不能传声。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "法律中,公民有受教育的权利和义务。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "思想政治中,共同富裕是社会主义的本质要求。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "汉字中,“美” 的本义是味道好。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "职业活动中,团队合作是重要的职业能力。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "生物中,遗传和变异是生物的基本特征。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "化学中,燃烧的三个条件是可燃物、氧气、温度达到着火点。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "中国特色社会主义最本质的特征是中国共产党领导。", options: ["对", "错"], answer: "对" },
+                { type: "choice", question: "下列词语中,加点字的读音完全正确的一项是", options: ["A. 畸形 (qí) 教诲 (huì)", "B. 粗糙 (cāo) 干涸 (hé)", "C. 澎湃 (bài) 哺育 (pǔ)", "D. 字帖 (tiě) 惩罚 (chéng)"], answer: "B" },
+                { type: "choice", question: "下列词语中,没有错别字的一项是", options: ["A. 迫不急待 再接再厉", "B. 金榜提名 悬梁刺骨", "C. 一筹莫展 蛛丝马迹", "D. 走头无路 迫在眉睫"], answer: "C" },
+                { type: "choice", question: "下列句子中,没有语病的一项是", options: ["A. 通过这次活动,使我明白了团结的重要性。", "B. 他不仅是全校第一,而且是全班第一。", "C. 能否坚持学习,是取得好成绩的关键。", "D. 我们要养成认真完成作业的好习惯。"], answer: "D" },
+                { type: "choice", question: "下列关于宪法的说法,错误的是", options: ["A. 宪法规定了公民的基本权利和义务", "B. 宪法的修改需要全国人大全体代表的三分之二以上通过", "C. 宪法是普通法律的立法基础", "D. 宪法的法律效力和普通法律是一样的"], answer: "D" },
+                { type: "choice", question: "下列物理量中,属于矢量的是", options: ["A. 质量", "B. 速度", "C. 路程", "D. 时间"], answer: "B" },
+                { type: "choice", question: "下列人物中,不属于唐宋八大家的是", options: ["A. 韩愈", "B. 柳宗元", "C. 欧阳修", "D. 李白"], answer: "D" },
+                { type: "choice", question: "下列关于职业道德的说法,正确的是", options: ["A. 职业道德只适用于本职业,对其他职业没有用", "B. 职业道德是一成不变的,不会随着时代变化", "C. 职业道德是法律规定的,必须遵守", "D. 职业道德是职业活动中的行为准则,有助于维护职业秩序"], answer: "D" },
+                { type: "choice", question: "下列数学计算中,正确的是", options: ["A. 2+3×4=20", "B. (2+3)×4=20", "C. 2×3+4=14", "D. 2×(3+4)=10"], answer: "B" },
+                { type: "choice", question: "下列关于我国的国家机构,说法正确的是", options: ["A. 全国人民代表大会是我国的最高行政机关", "B. 国务院是我国的最高权力机关", "C. 人民法院是我国的审判机关", "D. 人民检察院是我国的监察机关"], answer: "C" },
+                { type: "choice", question: "职场礼仪中,下列做法正确的是", options: ["A. 初次见面,直接称呼对方的名字", "B. 握手的时候,女士先伸手", "C. 打电话的时候,对方先挂电话", "D. 介绍他人的时候,先介绍长辈,再介绍晚辈"], answer: "B" },
+                { type: "choice", question: "下列关于习近平新时代中国特色社会主义思想,说法错误的是", options: ["A. 是新时代中国共产党的思想旗帜", "B. 是当代中国马克思主义、二十一世纪马克思主义", "C. 是中华文化和中国精神的时代精华", "D. 只适用于中国,对世界没有意义"], answer: "D" },
+                { type: "choice", question: "下列生物常识中,说法正确的是", options: ["A. 所有的生物都有细胞结构", "B. 病毒是原核生物", "C. 光合作用可以把光能转化为化学能", "D. 细胞呼吸只能在有氧的条件下进行"], answer: "C" },
+                { type: "choice", question: "下列化学常识中,说法正确的是", options: ["A. 空气的主要成分是氧气", "B. 水是由氢气和氧气组成的", "C. 铁生锈是一种化学变化", "D. 催化剂可以改变反应的产物"], answer: "C" },
+                { type: "choice", question: "下列地理常识中,说法正确的是", options: ["A. 我国的南方地区和北方地区的分界线是长江", "B. 我国的最大的淡水湖是鄱阳湖", "C. 我国的最长的河流是黄河", "D. 我国的领土最南端是海南岛"], answer: "B" },
+                { type: "choice", question: "下列关于人际交往的说法,错误的是", options: ["A. 人际交往中,要学会尊重他人", "B. 人际交往中,要学会倾听", "C. 人际交往中,要学会赞美他人", "D. 人际交往中,要尽量讨好他人,才能搞好关系"], answer: "D" },
+                { type: "choice", question: "下列文学常识中,说法正确的是", options: ["A. 《红楼梦》的作者是曹雪芹,是我国古代的四大名著之一", "B. 《三国演义》的作者是施耐庵", "C. 《水浒传》的作者是罗贯中", "D. 《西游记》的作者是吴敬梓"], answer: "A" },
+                { type: "choice", question: "下列数学概念中,说法正确的是", options: ["A. 0 是最小的整数", "B. 负数的绝对值是它本身", "C. 互为相反数的两个数的和是 0", "D. 互为倒数的两个数的和是 1"], answer: "C" },
+                { type: "choice", question: "下列法律常识中,说法正确的是", options: ["A. 未满 16 周岁的公民,不用承担任何法律责任", "B. 正当防卫不用承担任何法律责任,不管防卫过不过当", "C. 公民的人格尊严不受侵犯,禁止用任何方法对公民进行侮辱、诽谤和诬告陷害", "D. 公民有言论自由,想说什么就说什么,不用受任何限制"], answer: "C" },
+                { type: "choice", question: "下列物理常识中,说法正确的是", options: ["A. 物体的质量越大,惯性越大", "B. 物体的速度越大,惯性越大", "C. 物体运动的时候才有惯性,静止的时候没有惯性", "D. 惯性是一种力,可以改变物体的运动状态"], answer: "A" },
+                { type: "choice", question: "下列关于社会主义核心价值观,说法错误的是", options: ["A. 国家层面的价值目标是富强、民主、文明、和谐", "B. 社会层面的价值取向是自由、平等、公正、法治", "C. 公民个人层面的价值准则是爱国、敬业、诚信、友善", "D. 社会主义核心价值观只是对党员的要求,对普通公民没有要求"], answer: "D" },
+                { type: "choice", question: "下列汉字的造字法中,属于形声字的是", options: ["A. 山", "B. 河", "C. 人", "D. 日"], answer: "B" },
+                { type: "choice", question: "下列关于常用文书的写作,说法正确的是", options: ["A. 通知的标题可以只写 “通知” 两个字", "B. 申请书的结尾不用写致敬语", "C. 请假条不用写请假的时间", "D. 借条不用写还款的时间"], answer: "A" },
+                { type: "choice", question: "下列关于马克思主义基本原理,说法正确的是", options: ["A. 世界的本原是意识", "B. 事物是普遍联系和永恒发展的", "C. 认识是一成不变的,不会随着实践变化", "D. 社会发展没有规律,是随机的"], answer: "B" },
+                { type: "choice", question: "下列关于电气安全的常识,说法正确的是", options: ["A. 发现有人触电,应该直接用手把他拉开", "B. 发现有人触电,应该先切断电源,再进行救援", "C. 为了方便,可以用铜丝代替保险丝", "D. 三孔插座可以不用接地线,不影响使用"], answer: "B" },
+                { type: "choice", question: "下列关于中国古代的历史,说法正确的是", options: ["A. 秦始皇统一了六国,建立了秦朝", "B. 汉武帝开创了贞观之治", "C. 唐太宗开创了开元盛世", "D. 康熙皇帝是清朝的第一个皇帝"], answer: "A" },
+                { type: "choice", question: "下列关于职场的说法,错误的是", options: ["A. 职场中,要遵守公司的规章制度", "B. 职场中,要按时完成自己的工作任务", "C. 职场中,要学会和同事合作", "D. 职场中,只要自己的工作做好就行,不用管别人"], answer: "D" },
+                { type: "choice", question: "下列数学计算中,二进制数 1010 转换成十进制数是", options: ["A. 8", "B. 9", "C. 10", "D. 11"], answer: "C" },
+                { type: "choice", question: "下列关于电阻的单位,说法正确的是", options: ["A. 1 kΩ=100 Ω", "B. 1 MΩ=1000 kΩ", "C. 1 Ω=1000 mΩ", "D. 1 mΩ=1000 μΩ"], answer: "B" },
+                { type: "choice", question: "下列关于二极管的说法,正确的是", options: ["A. 二极管可以双向导电", "B. 二极管的正向电阻很大,反向电阻很小", "C. 二极管具有单向导电性", "D. 二极管的符号是三角形加横线,横线是正极"], answer: "C" },
+                { type: "choice", question: "下列关于三相电路的说法,正确的是", options: ["A. 三相对称电路中,线电压是相电压的√3 倍", "B. 三相对称电路中,线电流是相电流的√3 倍", "C. 三相电路的功率因数一定是 1", "D. 三相电路中,火线和零线的电压是 380V"], answer: "A" },
+                { type: "choice", question: "下列关于安全颜色的说法,正确的是", options: ["A. 红色表示禁止、停止", "B. 黄色表示指令、必须遵守", "C. 蓝色表示警告、注意", "D. 绿色表示提示、安全状态"], answer: "A" },
+                { type: "choice", question: "下列关于万用表的使用,说法正确的是", options: ["A. 测量电阻的时候,可以带电测量", "B. 测量电流的时候,要把万用表并联在电路中", "C. 测量电压的时候,要把万用表串联在电路中", "D. 测量完之后,要把万用表调到交流电压最高档"], answer: "D" },
+                { type: "choice", question: "下列关于传感器的说法,正确的是", options: ["A. 温度传感器只能测量温度,不能做其他用", "B. 超声波传感器可以用来测量距离", "C. 力传感器只能测量力,不能测量重量", "D. 光电传感器只能用来检测光,不能检测物体"], answer: "B" },
+                { type: "choice", question: "下列关于三孔插座的接线,说法正确的是", options: ["A. 左火右零上接地", "B. 左零右火上接地", "C. 左火右地接零", "D. 左地右火接零"], answer: "B" },
+                { type: "choice", question: "下列关于触电的说法,正确的是", options: ["A. 只有高压电才会触电,低压电不会", "B. 只要不接触火线,就不会触电", "C. 触电的危害主要是电流通过人体,造成伤害", "D. 触电的时候,电流越小,伤害越大"], answer: "C" },
+                { type: "choice", question: "下列关于变压器的说法,正确的是", options: ["A. 变压器可以改变直流电压", "B. 变压器的变比是原副线圈的匝数比", "C. 变压器可以改变功率,提高功率", "D. 变压器的原线圈和副线圈的电流是一样的"], answer: "B" },
+                { type: "choice", question: "下列关于基尔霍夫电流定律,说法正确的是", options: ["A. 流入节点的电流之和等于流出节点的电流之和", "B. 流入节点的电流之和大于流出节点的电流之和", "C. 流入节点的电流之和小于流出节点的电流之和", "D. 基尔霍夫电流定律只适用于直流电路,不适用于交流电路"], answer: "A" },
+                { type: "choice", question: "下列关于戴维南定理,说法正确的是", options: ["A. 任何一个线性有源二端网络,都可以等效为一个电压源和一个电阻的串联", "B. 任何一个电路,都可以等效为一个电压源和一个电阻的串联", "C. 戴维南定理只能用来分析直流电路,不能分析交流电路", "D. 戴维南定理的等效电阻是把有源二端网络的电源短路之后的电阻"], answer: "A" },
+                { type: "choice", question: "下列关于逻辑门的说法,正确的是", options: ["A. 与门的逻辑是全 1 出 1,有 0 出 0", "B. 或门的逻辑是全 0 出 0,有 1 出 1", "C. 非门的逻辑是输入和输出相反", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于触发器的说法,正确的是", options: ["A. RS 触发器的特性是置位、复位、保持", "B. JK 触发器的特性是置位、复位、保持、翻转", "C. D 触发器的特性是次态等于输入 D", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于漏电保护器的说法,正确的是", options: ["A. 漏电保护器可以防止触电事故", "B. 漏电保护器可以防止短路事故", "C. 漏电保护器可以防止过载事故", "D. 漏电保护器可以代替保险丝"], answer: "A" },
+                { type: "choice", question: "下列关于电烙铁的使用,说法正确的是", options: ["A. 电烙铁可以长时间空烧", "B. 焊接的时候,要先加热元件,再上焊锡", "C. 焊接完之后,不用清理焊锡,直接就可以", "D. 电烙铁的温度越高,焊接效果越好"], answer: "B" },
+                { type: "choice", question: "下列关于兆欧表的使用,说法正确的是", options: ["A. 兆欧表是用来测量绝缘电阻的", "B. 兆欧表可以带电测量", "C. 兆欧表的测量电压都是 220V", "D. 兆欧表测量的时候,不用断开电源"], answer: "A" },
+                { type: "choice", question: "下列关于钳型电流表的使用,说法正确的是", options: ["A. 钳型电流表可以测量直流电流", "B. 钳型电流表测量的时候,要把导线穿过钳口", "C. 钳型电流表测量的时候,可以同时穿过多根导线", "D. 钳型电流表的精度很高,比普通的电流表还高"], answer: "B" },
+                { type: "choice", question: "下列关于生活用电的说法,正确的是", options: ["A. 家庭电路的电压是 380V", "B. 家庭电路中,开关要接在零线上", "C. 家庭电路中,保险丝要接在火线上", "D. 家庭电路中,多个大功率用电器可以接在同一个插座上"], answer: "C" },
+                { type: "choice", question: "下列关于电路电流过大的原因,说法正确的是", options: ["A. 短路,就是火线和零线直接接触,电阻很小,电流很大", "B. 过载,就是用电器的总功率过大,导致电流过大", "C. 以上都是", "D. 以上都不是"], answer: "C" },
+                { type: "choice", question: "下列关于安全用电的基本原则,说法错误的是", options: ["A. 不接触低压带电体", "B. 不靠近高压带电体", "C. 可以用湿手触摸开关", "D. 不用湿抹布擦正在工作的用电器"], answer: "C" },
+                { type: "choice", question: "下列关于导线的连接,说法正确的是", options: ["A. 导线的连接要牢固,接触电阻要小", "B. 导线的连接要绝缘良好,防止漏电", "C. 不同截面的导线不能直接连接", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于电子元器件的识别,说法正确的是", options: ["A. 二极管的长脚是正极,短脚是负极", "B. 三极管的三个脚分别是基极、发射极、集电极", "C. 色环电阻的颜色可以表示电阻的阻值", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于安全生产的说法,正确的是", options: ["A. 安全生产是企业的事,和员工没有关系", "B. 安全生产中,员工要正确佩戴劳动防护用品", "C. 安全生产中,只要不出事,就不用管规章制度", "D. 安全生产中,为了提高效率,可以违反操作规程"], answer: "B" },
+                { type: "judge", question: "欧姆定律只适用于线性电阻电路。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "二极管的单向导电性是指正向导通,反向截止。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "基尔霍夫电压定律是指,在任何一个闭合回路中,所有元件的电压的代数和为 0。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "三相电路中,火线和零线之间的电压是 220V,火线和火线之间的电压是 380V。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "二进制数 1101 转换成十进制数是 13。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "与门的逻辑运算中,只要有一个输入是 0,输出就是 0。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "发现有人触电,应该先切断电源,再进行救援。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "安全电压的等级是 42V、36V、24V、12V、6V。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "漏电保护器的作用是,当电路中出现漏电的时候,自动切断电源,防止触电。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "安全颜色中,红色表示禁止,黄色表示警告,蓝色表示指令,绿色表示安全。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电阻串联的时候,总电阻等于各个电阻的和。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电阻并联的时候,总电阻等于各个电阻的倒数和的倒数。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "变压器可以改变交流电压,也可以改变直流电压。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "三极管的三种组态是共射、共集、共基。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "数制转换中,十进制数 10 转换成二进制数是 1010。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "RS 触发器的输入不能同时为 1,否则会出现不确定的状态。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "接地和接零是一样的,都是为了防止触电。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "电气火灾的时候,不能用水灭火,应该用干粉灭火器。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "静电的危害是会引起爆炸、火灾,还会影响电子设备的正常工作。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "叠加原理只适用于线性电路,不适用于非线性电路。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "戴维南定理可以用来简化复杂的电路,方便计算。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "二极管的符号中,三角形的方向是正向电流的方向。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "数字电路中,高电平表示 1,低电平表示 0。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "编码器的作用是把二进制代码转换成对应的输入信号。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "译码器的作用是把输入信号转换成对应的二进制代码。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "触电事故中,最危险的是电流通过心脏,引起心室颤动。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "防雷装置的作用是把雷电的电流导入大地,防止雷电造成伤害。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电气安全的组织措施是指工作票制度、操作票制度、工作许可制度等。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电气安全的技术措施是指停电、验电、接地、挂牌、遮栏等。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "生产过程中,正确佩戴安全帽和工作服,是为了保护自己的安全。", options: ["对", "错"], answer: "对" },
+                { type: "choice", question: "两个电阻 R1=2Ω , R2=3Ω ,串联后的总电阻是", options: ["A. 1Ω", "B. 5Ω", "C. 1.2Ω", "D. 6Ω"], answer: "B" },
+                { type: "choice", question: "两个电阻 R1=2Ω , R2=3Ω ,并联后的总电阻是", options: ["A. 1Ω", "B. 5Ω", "C. 1.2Ω", "D. 6Ω"], answer: "C" },
+                { type: "choice", question: "一个电阻 R=10Ω ,接在20V的电压上,通过的电流是", options: ["A. 0.5A", "B. 2A", "C. 200A", "D. 0.2A"], answer: "B" },
+                { type: "choice", question: "基尔霍夫电流定律中,流入节点的电流是 2A、3A,流出节点的电流是 4A,那么剩下的一个电流是", options: ["A. 1A 流入", "B. 1A 流出", "C. 9A 流入", "D. 9A 流出"], answer: "A" },
+                { type: "choice", question: "单相正弦交流电的有效值是 220V,那么它的最大值是", options: ["A. 220V", "B. 380V", "C. 311V", "D. 110V"], answer: "C" },
+                { type: "choice", question: "变压器的原线圈匝数是 1000,副线圈匝数是 200,原线圈的电压是 220V,那么副线圈的电压是", options: ["A. 1100V", "B. 44V", "C. 220V", "D. 380V"], answer: "B" },
+                { type: "choice", question: "二极管的正向导通的时候,正向压降大概是", options: ["A. 0.7V(硅管)", "B. 0.2V(硅管)", "C. 0.7V(锗管)", "D. 0V"], answer: "A" },
+                { type: "choice", question: "三极管的 NPN 型和 PNP 型的区别是", options: ["A. NPN 的发射区是 N 型,PNP 的是 P 型", "B. NPN 的集电区是 N 型,PNP 的是 P 型", "C. NPN 的基区是 N 型,PNP 的是 P 型", "D. 没有区别"], answer: "A" },
+                { type: "choice", question: "十进制数 15 转换成二进制数是", options: ["A. 1111", "B. 1110", "C. 1101", "D. 1011"], answer: "A" },
+                { type: "choice", question: "二进制数 1111 转换成十进制数是", options: ["A. 13", "B. 14", "C. 15", "D. 16"], answer: "C" },
+                { type: "choice", question: "与门的输入是 1、0,那么输出是", options: ["A. 1", "B. 0", "C. 不确定", "D. 都有可能"], answer: "B" },
+                { type: "choice", question: "或门的输入是 1、0,那么输出是", options: ["A. 1", "B. 0", "C. 不确定", "D. 都有可能"], answer: "A" },
+                { type: "choice", question: "非门的输入是 1,那么输出是", options: ["A. 1", "B. 0", "C. 不确定", "D. 都有可能"], answer: "B" },
+                { type: "choice", question: "安全电压中,最常用的安全电压是", options: ["A. 36V", "B. 24V", "C. 12V", "D. 6V"], answer: "A" },
+                { type: "choice", question: "漏电保护器的动作电流一般是", options: ["A. 30mA", "B. 30A", "C. 300mA", "D. 3A"], answer: "A" },
+                { type: "choice", question: "下列颜色中,属于安全颜色的禁止颜色的是", options: ["A. 红色", "B. 黄色", "C. 蓝色", "D. 绿色"], answer: "A" },
+                { type: "choice", question: "下列情况中,会引起触电事故的是", options: ["A. 用手接触零线", "B. 用手接触火线,站在绝缘的凳子上", "C. 用手同时接触火线和零线", "D. 用手接触接地的导线"], answer: "C" },
+                { type: "choice", question: "电气火灾的时候,应该用什么灭火", options: ["A. 水", "B. 泡沫灭火器", "C. 干粉灭火器", "D. 都可以"], answer: "C" },
+                { type: "choice", question: "叠加原理中,当我们计算一个电源的作用的时候,其他的电源应该", options: ["A. 电压源短路,电流源开路", "B. 电压源开路,电流源短路", "C. 都短路", "D. 都开路"], answer: "A" },
+                { type: "choice", question: "戴维南定理中,等效电阻是", options: ["A. 把有源二端网络的电压源短路,电流源开路之后的电阻", "B. 把有源二端网络的电压源开路,电流源短路之后的电阻", "C. 有源二端网络的输入电阻", "D. 有源二端网络的输出电阻"], answer: "A" },
+                { type: "choice", question: "三相电路中,Y 接的负载,相电压和线电压的关系是", options: ["A. 线电压是相电压的√3 倍", "B. 相电压是线电压的√3 倍", "C. 线电压等于相电压", "D. 没有关系"], answer: "A" },
+                { type: "choice", question: "三相电路中,△接的负载,相电流和线电流的关系是", options: ["A. 线电流是相电流的√3 倍", "B. 相电流是线电流的√3 倍", "C. 线电流等于相电流", "D. 没有关系"], answer: "A" },
+                { type: "choice", question: "RS 触发器的输入 R=1 , S=0 ,那么输出是", options: ["A. Q=0 ,复位", "B. Q=1 ,置位", "C. 保持原来的状态", "D. 不确定"], answer: "A" },
+                { type: "choice", question: "JK 触发器的输入 J=1 , K=1 ,那么输出是", options: ["A. 复位", "B. 置位", "C. 保持", "D. 翻转"], answer: "D" },
+                { type: "choice", question: "D 触发器的输入 D=1 ,那么输出是", options: ["A. 0", "B. 1", "C. 保持", "D. 翻转"], answer: "B" },
+                { type: "choice", question: "下列静电的防护措施中,错误的是", options: ["A. 接地", "B. 增湿", "C. 使用抗静电材料", "D. 提高温度"], answer: "D" },
+                { type: "choice", question: "下列防雷的措施中,错误的是", options: ["A. 安装避雷针", "B. 安装避雷线", "C. 安装避雷器", "D. 把设备放在高处"], answer: "D" },
+                { type: "choice", question: "下列电气安全的组织措施中,错误的是", options: ["A. 工作票制度", "B. 操作票制度", "C. 工作许可制度", "D. 不用监护,自己工作就行"], answer: "D" },
+                { type: "choice", question: "下列电气安全的技术措施中,错误的是", options: ["A. 停电", "B. 验电", "C. 接地", "D. 不用挂牌,自己知道就行"], answer: "D" },
+                { type: "choice", question: "下列关于安全生产的说法,错误的是", options: ["A. 安全第一,预防为主", "B. 生产必须安全,安全促进生产", "C. 只要生产,不用管安全", "D. 安全生产,人人有责"], answer: "C" },
+                { type: "judge", question: "三孔插座的接线规则是 “左零右火上接地”。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "万用表测量电阻的时候,可以带电测量。", options: ["对", "错"], answer: "错" },
+                { type: "judge", question: "验电笔可以用来检测火线和零线。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电烙铁焊接的时候,要先给元件和焊盘加热,然后再上焊锡。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "兆欧表是用来测量绝缘电阻的,用来检测设备的绝缘情况。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "钳型电流表可以不用断开电路,就可以测量电流。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "温度传感器可以用来测量物体的温度,比如热电偶、热电阻。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "超声波传感器可以用来测量距离,比如倒车雷达。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "光电传感器可以用来检测物体的有无,比如流水线的计数。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "力传感器可以用来测量力的大小,比如称重传感器。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "接近开关可以用来检测物体的接近,不用接触。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "保险丝的作用是,当电路中电流过大的时候,自动熔断,切断电路,保护设备。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "家庭电路中,开关要接在火线上,这样断开开关的时候,用电器就不带电了。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "家庭电路中,保险丝要接在火线上,这样熔断的时候,用电器就不带电了。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "低压触电的形式有单相触电、两相触电、跨步电压触电。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "引起电路电流过大的原因有两个:短路和过载。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "安全用电的基本原则是:不接触低压带电体,不靠近高压带电体。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "二极管的长脚是正极,短脚是负极。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "三极管的三个脚,分别是基极 b、发射极 e、集电极 c。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "色环电阻的颜色,棕红橙黄绿蓝紫灰白黑,分别对应 1、2、3、4、5、6、7、8、9、0。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "万用表测量直流电压的时候,红表笔接正极,黑表笔接负极。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "万用表测量直流电流的时候,要把万用表串联在电路中。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "万用表测量交流电压的时候,不用区分正负极。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "兆欧表测量的时候,要断开设备的电源,不能带电测量。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "导线的连接,要牢固,绝缘要良好,防止漏电。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "焊接的时候,焊锡不能太多,也不能太少,要刚好把焊点包住。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "家庭用电中,多个大功率的用电器,不能接在同一个插座上,防止电流过大。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "湿手不能触摸开关,也不能擦正在工作的用电器,防止触电。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "传感器的输出信号,一般是电信号,可以被电路处理。", options: ["对", "错"], answer: "对" },
+                { type: "judge", question: "电工工具的使用,要按照规范来,不能乱用,防止损坏工具,也防止自己受伤。", options: ["对", "错"], answer: "对" },
+                { type: "choice", question: "下列传感器中,能够测量距离的是", options: ["A. 温度传感器", "B. 超声波传感器", "C. 力传感器", "D. 光电传感器"], answer: "B" },
+                { type: "choice", question: "下列传感器中,能够检测物体的温度的是", options: ["A. 热电偶", "B. 超声波传感器", "C. 力传感器", "D. 光电传感器"], answer: "A" },
+                { type: "choice", question: "下列传感器中,能够检测物体的重量的是", options: ["A. 温度传感器", "B. 超声波传感器", "C. 力传感器", "D. 光电传感器"], answer: "C" },
+                { type: "choice", question: "下列传感器中,能够检测物体的有无的是", options: ["A. 温度传感器", "B. 超声波传感器", "C. 力传感器", "D. 光电传感器"], answer: "D" },
+                { type: "choice", question: "三孔插座的接线,正确的是", options: ["A. 左零右火上接地", "B. 左火右零上接地", "C. 左零右地上接火", "D. 左地右火上接零"], answer: "A" },
+                { type: "choice", question: "验电笔检测的时候,接触火线,验电笔的氖管会", options: ["A. 发光", "B. 不发光", "C. 闪烁", "D. 不确定"], answer: "A" },
+                { type: "choice", question: "验电笔检测的时候,接触零线,验电笔的氖管会", options: ["A. 发光", "B. 不发光", "C. 闪烁", "D. 不确定"], answer: "B" },
+                { type: "choice", question: "保险丝的作用是", options: ["A. 当电流过大的时候,熔断,切断电路", "B. 当电压过大的时候,熔断,切断电路", "C. 当漏电的时候,熔断,切断电路", "D. 当触电的时候,熔断,切断电路"], answer: "A" },
+                { type: "choice", question: "下列关于万用表的使用,说法正确的是", options: ["A. 测量电阻的时候,要先进行欧姆调零", "B. 测量电压的时候,要串联在电路中", "C. 测量电流的时候,要并联在电路中", "D. 测量完之后,要把万用表调到电阻档"], answer: "A" },
+                { type: "choice", question: "下列关于兆欧表的使用,说法正确的是", options: ["A. 测量绝缘电阻,要断开电源", "B. 测量的时候,可以带电测量", "C. 测量的时候,不用接线,直接测就行", "D. 兆欧表的电压都是一样的"], answer: "A" },
+                { type: "choice", question: "下列关于钳型电流表的使用,说法正确的是", options: ["A. 可以不用断开电路,测量电流", "B. 测量的时候,要把所有的导线都穿过钳口", "C. 测量的时候,钳口可以不用闭合", "D. 钳型电流表只能测量直流电流"], answer: "A" },
+                { type: "choice", question: "下列关于电烙铁的使用,说法正确的是", options: ["A. 焊接前,要给电烙铁预热", "B. 可以长时间空烧电烙铁", "C. 焊接的时候,直接把焊锡往电烙铁上抹", "D. 焊接完之后,不用清理电烙铁"], answer: "A" },
+                { type: "choice", question: "下列关于二极管的识别,说法正确的是", options: ["A. 长脚是正极,短脚是负极", "B. 长脚是负极,短脚是正极", "C. 有白色环的一端是正极", "D. 没有标识,没法识别"], answer: "A" },
+                { type: "choice", question: "下列关于三极管的识别,说法正确的是", options: ["A. 面对引脚,从左到右,一般是 b、e、c", "B. 面对引脚,从左到右,一般是 e、b、c", "C. 所有的三极管的引脚排列都是一样的", "D. 三极管的引脚没有规律,没法识别"], answer: "B" },
+                { type: "choice", question: "下列关于色环电阻的识别,棕红橙黄四个色环,阻值是", options: ["A. 12kΩ", "B. 23kΩ", "C. 12Ω", "D. 23Ω"], answer: "A" },
+                { type: "choice", question: "下列关于家庭电路的电压,说法正确的是", options: ["A. 火线和零线之间是 220V", "B. 火线和地线之间是 380V", "C. 零线和地线之间是 220V", "D. 火线和火线之间是 220V"], answer: "A" },
+                { type: "choice", question: "下列关于家庭电路的开关,说法正确的是", options: ["A. 开关要接在火线上", "B. 开关要接在零线上", "C. 开关接在哪个线上都一样", "D. 开关要接在地线上"], answer: "A" },
+                { type: "choice", question: "下列关于触电的形式,说法错误的是", options: ["A. 单相触电,就是接触一根火线,站在地上", "B. 两相触电,就是同时接触两根火线,这个是最危险的", "C. 跨步电压触电,就是高压电线掉地上,人走过去,两脚之间的电压", "D. 所有的触电形式,伤害都是一样的"], answer: "D" },
+                { type: "choice", question: "下列关于电路电流过大的原因,说法错误的是", options: ["A. 短路,就是火线和零线直接接触,电阻很小,电流很大", "B. 过载,就是用电器的总功率过大,导致电流过大", "C. 漏电,就是电流从地线流走,也会导致电流过大", "D. 以上都是"], answer: "C" },
+                { type: "choice", question: "下列关于安全用电的说法,错误的是", options: ["A. 不接触低压带电体", "B. 不靠近高压带电体", "C. 可以用铜丝代替保险丝", "D. 不用湿手触摸开关"], answer: "C" },
+                { type: "choice", question: "下列关于电工测量的说法,正确的是", options: ["A. 测量电压的时候,要并联在电路中", "B. 测量电流的时候,要串联在电路中", "C. 测量功率的时候,要把电压和电流都测出来", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于三相负载的测量,说法正确的是", options: ["A. 可以测量三相的电压", "B. 可以测量三相的电流", "C. 可以测量三相的功率", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于导线的连接,说法错误的是", options: ["A. 导线连接的时候,要把芯线绞紧", "B. 连接完之后,要包上绝缘胶带", "C. 不同截面的导线可以直接连接", "D. 多股导线连接的时候,要镀锡,防止松散"], answer: "C" },
+                { type: "choice", question: "下列关于焊接的说法,错误的是", options: ["A. 焊接的时候,要先加热元件和焊盘", "B. 然后上焊锡,让焊锡自动流过去", "C. 焊锡越多,焊接越好", "D. 焊接完之后,要等焊锡冷却,再动元件"], answer: "C" },
+                { type: "choice", question: "下列关于接近开关的说法,正确的是", options: ["A. 可以不用接触,就可以检测物体", "B. 必须接触,才能检测物体", "C. 只能检测金属物体", "D. 只能检测塑料物体"], answer: "A" },
+                { type: "choice", question: "下列关于光电传感器的说法,正确的是", options: ["A. 可以检测物体的有无", "B. 可以检测物体的颜色", "C. 可以检测物体的距离", "D. 以上都对"], answer: "D" },
+                { type: "choice", question: "下列关于超声波传感器的说法,正确的是", options: ["A. 可以测量距离", "B. 可以测量温度", "C. 可以测量力", "D. 可以测量光"], answer: "A" },
+                { type: "choice", question: "下列关于温度传感器的说法,正确的是", options: ["A. 可以测量温度", "B. 可以测量距离", "C. 可以测量力", "D. 可以测量光"], answer: "A" },
+                { type: "choice", question: "下列关于力传感器的说法,正确的是", options: ["A. 可以测量力的大小", "B. 可以测量距离", "C. 可以测量温度", "D. 可以测量光"], answer: "A" },
+                { type: "choice", question: "下列关于电工工具的说法,错误的是", options: ["A. 螺丝刀可以用来拧螺丝", "B. 剥线钳可以用来剥导线的绝缘皮", "C. 钢丝钳可以用来剪导线", "D. 电工刀可以用来削苹果,反正都是刀"], answer: "D" }
+            ];
+
+            // ---------- 应用状态 ----------
+            let shuffledQuestions = [...questions];
+            let currentIndex = 0;
+            let userAnswers = {}; // key: index, value: 用户答案首字符
+
+            // 随机打乱数组
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            // 初始化打乱
+            shuffleArray(shuffledQuestions);
+
+            // DOM元素
+            const titleLabel = document.getElementById('titleLabel');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            const statsBtn = document.getElementById('statsBtn');
+            const statsModal = document.getElementById('statsModal');
+            const statsContent = document.getElementById('statsContent');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            // 渲染当前题目
+            function renderQuestion() {
+                if (!shuffledQuestions.length || currentIndex >= shuffledQuestions.length) {
+                    titleLabel.textContent = '🎉 恭喜！已刷完所有题目';
+                    questionText.textContent = '没有更多题目了，点击“重新随机”开始新一轮刷题吧。';
+                    optionsContainer.innerHTML = '';
+                    return;
+                }
+
+                const q = shuffledQuestions[currentIndex];
+                titleLabel.textContent = `第 ${currentIndex + 1} 题 / 共 ${shuffledQuestions.length} 题`;
+                questionText.textContent = q.question;
+
+                // 生成选项按钮
+                optionsContainer.innerHTML = '';
+                const options = q.options;
+                const correctAnswer = q.answer;
+                const userAns = userAnswers[currentIndex] || null;
+
+                options.forEach((optText, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = optText;
+                    
+                    // 获取选项首字符（判断题是“对”/“错”，选择题是A/B/C/D）
+                    const optKey = optText.charAt(0);
+                    
+                    // 如果已经答过，显示颜色并禁用
+                    if (userAns !== null && userAns !== undefined) {
+                        btn.disabled = true;
+                        if (optKey === correctAnswer) {
+                            btn.classList.add('correct');
+                        } else if (optKey === userAns) {
+                            btn.classList.add('wrong');
+                        }
+                    } else {
+                        // 未答过，绑定点击事件
+                        btn.addEventListener('click', () => handleOptionClick(idx, optKey));
+                    }
+                    
+                    optionsContainer.appendChild(btn);
+                });
+            }
+
+            // 处理选项点击
+            function handleOptionClick(optIndex, optKey) {
+                const q = shuffledQuestions[currentIndex];
+                // 记录用户答案
+                userAnswers[currentIndex] = optKey;
+                // 重新渲染当前题目以显示颜色
+                renderQuestion();
+            }
+
+            // 上一题
+            function prevQuestion() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderQuestion();
+                }
+            }
+
+            // 下一题
+            function nextQuestion() {
+                if (currentIndex < shuffledQuestions.length - 1) {
+                    currentIndex++;
+                    renderQuestion();
+                }
+            }
+
+            // 重新随机
+            function reshuffleQuestions() {
+                shuffledQuestions = [...questions];
+                shuffleArray(shuffledQuestions);
+                currentIndex = 0;
+                userAnswers = {};
+                renderQuestion();
+                alert('题目已重新随机打乱，开始新的刷题吧！');
+            }
+
+            // 显示统计
+            function showStats() {
+                const total = shuffledQuestions.length;
+                const answered = Object.keys(userAnswers).length;
+                if (answered === 0) {
+                    alert('你还没有回答任何题目哦，快去刷题吧！');
+                    return;
+                }
+
+                let correct = 0;
+                let wrong = 0;
+                for (const [idxStr, ans] of Object.entries(userAnswers)) {
+                    const idx = parseInt(idxStr, 10);
+                    const q = shuffledQuestions[idx];
+                    if (q && ans === q.answer) {
+                        correct++;
+                    } else {
+                        wrong++;
+                    }
+                }
+
+                const accuracy = ((correct / answered) * 100).toFixed(2);
+                statsContent.innerHTML = `
+                    <p>总题目数：<span class="stats-highlight">${total} 题</span></p>
+                    <p>已答题数：<span class="stats-highlight">${answered} 题</span></p>
+                    <p>✅ 做对：<span class="stats-highlight">${correct} 题</span></p>
+                    <p>❌ 做错：<span class="stats-highlight">${wrong} 题</span></p>
+                    <p>📈 正确率：<span class="stats-highlight">${accuracy}%</span></p>
+                    <p style="margin-top:15px; color:#2563eb;">继续加油，争取正确率100%！</p>
+                `;
+                statsModal.classList.add('active');
+            }
+
+            // 关闭模态框
+            function closeModal() {
+                statsModal.classList.remove('active');
+            }
+
+            // 事件绑定
+            prevBtn.addEventListener('click', prevQuestion);
+            nextBtn.addEventListener('click', nextQuestion);
+            shuffleBtn.addEventListener('click', reshuffleQuestions);
+            statsBtn.addEventListener('click', showStats);
+            closeModalBtn.addEventListener('click', closeModal);
+            statsModal.addEventListener('click', function(e) {
+                if (e.target === statsModal) {
+                    closeModal();
+                }
+            });
+
+            // 键盘左右键导航（可选）
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevQuestion();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextQuestion();
+                }
+            });
+
+            // 初始渲染
+            renderQuestion();
+        })();
+    </script>
+</body>
+</html>
