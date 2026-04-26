@@ -1,0 +1,23 @@
+name: Build iOS IPA
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+      - name: Generate IPA
+        run: |
+          pwabuilder package --bundleId com.songshan.exam --name "松山刷题" --url https://3042322684-cmyk.github.io/songshan-exam/ --platform ios --output ./ipa_output
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        with:
+          name: songshan-ipa
+          path: ./ipa_output/*.ipa
